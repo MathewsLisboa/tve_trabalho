@@ -9,6 +9,7 @@ pacman::p_load('tidyverse','lubridate','copula',
 ano_inicio <- as.Date("2014-01-02", format = "%Y-%m-%d")
 ano_fim <-  as.Date("2022-12-29", format = "%Y-%m-%d")
 ### Carrega as funções customizadas
+setwd("~/UNB_mestrado/copulas/tve_trabalho/trabalho_1")
 source("funcoes.R")
 
 
@@ -137,13 +138,14 @@ PORTO_VaR[-1] %>%
 
 
 
-PORTO_Bmax <- Bloco_maximo(data = PORTO, values = "Retorno")
+PORTO_Bmax <- Bloco_maximo(data = PORTO, values = "Retorno", force = 17)
 PORTO_n <- PORTO_Bmax$n
 PORTO_n <- 17
 PORTO_tab <- PORTO_Bmax$Teste %>%
   summarise(Tamanho = Tamanho,
             P.valor = round(P.valor, 2)) %>%
   as_tibble()
+
 
 PORTO_ts <- PORTO_Bmax$Serie %>%
   dplyr::select(c("Date", "Retorno"))
@@ -160,9 +162,9 @@ BB_tab <- BB_Bmax$Teste %>%
 BB_ts <- BB_Bmax$Serie %>%
   dplyr::select(c("Date", "Retorno"))
 
-save(PORTO_Bmax, file = 'porto_B_max_prontos.rdata')
-save(BB_Bmax, file = 'BB_B_max_prontos.rdata')
-load()
+# save(PORTO_Bmax, file = 'porto_B_max_prontos.rdata')
+# save(BB_Bmax, file = 'BB_B_max_prontos.rdata')
+# load()
 
 
 
@@ -263,11 +265,11 @@ ci(BB_fit,type="parameter")
 ci(PORTO_fit,type="parameter")
 
 
-years <- c(2,5,10,20)
+years <- c(2,5,50,100)
 
 return.level(BB_fit, years, do.ci = TRUE)
 
-return.level(PORTO_fit, years, do.ci = TRUE)
+return.level(PORTO_fit, years, do.ci = TRUE)[1:(4*3)]
 
 
 BB_Full_ret <- Retorno(BB_fit, years)
